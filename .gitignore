@@ -97,6 +97,9 @@ public
 # DynamoDB Local files
 .dynamodb/
 
+# Idea files
+.idea/
+
 # contract build
 build/
 assets/
