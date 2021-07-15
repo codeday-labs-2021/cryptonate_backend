@@ -1,6 +1,7 @@
 /*
 CAMPAIGN SCHEMA
     author_id: String (required)
+    title: String (required)
     date_created: Date (defaults to now)
     date_end: Date
     image_url: String
@@ -15,6 +16,10 @@ const Schema = mongoose.Schema;
 
 const campaignSchema = new Schema({
     author_id: {
+        type: String,
+        required: true,
+    },
+    title: {
         type: String,
         required: true,
     },
