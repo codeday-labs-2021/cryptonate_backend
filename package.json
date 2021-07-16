@@ -11,14 +11,16 @@
     "url": "git+https://github.com/codeday-labs/cryptonate_backend.git"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "eslint": "^6.1.0",
     "husky": "^3.0.5",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "lint-staged": "^9.3.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^2.0.12"
   },
   "author": "",
   "license": "ISC",
