@@ -11,11 +11,13 @@ const Schema = mongoose.Schema;
 
 const donationSchema = new Schema({
     campaign_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Campaign",
         required: true,
     },
     user_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     amount_donated: {

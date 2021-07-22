@@ -4,6 +4,7 @@ USER SCHEMA
 	first_name: String (required)
 	last_name: String (required)
 	email: String (required)
+	password: String (required)
 
 	//for users that will create a campaign
 	occupation: String
@@ -16,6 +17,7 @@ USER SCHEMA
  */
 
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -28,6 +30,11 @@ const userSchema = new Schema({
         required: true,
     },
     email: {
+        type: String,
+        required: true,
+        match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    },
+    password: {
         type: String,
         required: true,
     },
@@ -61,6 +68,11 @@ const userSchema = new Schema({
         type: String,
         required: false,
     },
+});
+
+userSchema.pre('save', async function(next){
+    if (this.isNew || this.isModified('password')) this.password = await bcrypt.hash(this.password, saltRounds)
+    next()
 });
 
 const User = mongoose.model("User", userSchema);

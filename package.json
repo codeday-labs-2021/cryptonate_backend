@@ -11,8 +11,11 @@
     "url": "git+https://github.com/codeday-labs/cryptonate_backend.git"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
-    "mongoose": "^5.13.2"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.2",
+    "multer": "^1.4.2"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
@@ -20,7 +23,9 @@
     "husky": "^3.0.5",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "lint-staged": "^9.3.0",
-    "nodemon": "^2.0.12"
+    "nodemailer": "^6.6.3",
+    "nodemon": "^2.0.12",
+    "uuid": "^8.3.2"
   },
   "author": "",
   "license": "ISC",
