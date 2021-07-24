@@ -17,7 +17,7 @@ USER SCHEMA
  */
 
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -38,6 +38,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+
+
+    passwordResetToken: String,
+    passwordResetExpires: Date,
 
 
     occupation: {
@@ -70,10 +74,12 @@ const userSchema = new Schema({
     },
 });
 
-userSchema.pre('save', async function(next){
-    if (this.isNew || this.isModified('password')) this.password = await bcrypt.hash(this.password, saltRounds)
-    next()
-});
+userSchema.methods.createPasswordResetToken = function() {
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    return resetToken;
+}
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

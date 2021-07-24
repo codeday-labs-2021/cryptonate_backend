@@ -17,6 +17,11 @@ router.delete('/:id', checkAuth,(req, res) => userController.deleteUser(req, res
 
 //authentication
 router.post('/signup', (req, res) => userController.signUpUser(req, res));
-router.post('/login', ((req, res) => userController.loginUser(req, res)))
+router.post('/login', ((req, res) => userController.loginUser(req, res)));
+
+//password reset
+router.post('/forgotPassword', (req, res) => userController.forgotPassword(req, res));
+router.patch('/resetPassword/:token', ((req, res) => userController.resetPassword(req, res)));
+
 
 module.exports = router;
