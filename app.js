@@ -3,32 +3,34 @@ const mongoose = require("mongoose");
 const campaignRoutes = require("./routes/campaign-routes");
 const donationRoutes = require("./routes/donation-routes");
 const userRoutes = require("./routes/user-routes");
+const cors = require("cors");
 require("dotenv").config();
 
 //TODO: maybe? delete donation if user or campaign is deleted
 
 const app = express();
+app.use(cors());
 
 const port = process.env.PORT || 3000;
 
-mongoose.set('useFindAndModify', false);
+// mongoose.set('useFindAndModify', false);
 
-//CONNECT TO MONGODB AND LISTEN FOR REQUESTS
-const dbURI = process.env.DB_URI;
+// //CONNECT TO MONGODB AND LISTEN FOR REQUESTS
+// const dbURI = process.env.DB_URI;
 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(result => {
-        app.listen(port);
-        console.log(`Listening on port ${port}...`);
-    })
-    .catch(err => console.log(err));
+// mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+//     .then(result => {
+//         app.listen(port);
+//         console.log(`Listening on port ${port}...`);
+//     })
+//     .catch(err => console.log(err));
 
 //MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-//TODO: handle CORS?
+console.log("=======");
 
 //CAMPAIGN ROUTES
 app.use("/api/campaigns", campaignRoutes);
@@ -53,3 +55,5 @@ app.use(((err, req, res, next) => {
     })
 }));
 
+app.listen(port);
+console.log(`Listening on port ${port}...`);

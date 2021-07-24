@@ -16,7 +16,21 @@ router.patch('/:id', checkAuth, (req, res) => userController.updateUser(req, res
 router.delete('/:id', checkAuth,(req, res) => userController.deleteUser(req, res));
 
 //authentication
-router.post('/signup', (req, res) => userController.signUpUser(req, res));
+router.post('/signup', (req, res) =>{
+console.log(" =======================",JSON.stringify(req.body));    
+ try{
+     let userdata = {
+         "id":11101,
+         "lastname":req.body.lastname,
+         "firstname":req.body.firstname,
+         "email": req.body.email
+     }
+    res.json({result:"successful", data:userdata});
+ }catch(error){
+     console.log("signup", error);
+     res.json({result:"failed", msg:error.message});
+ }
+});
 router.post('/login', ((req, res) => userController.loginUser(req, res)))
 
 module.exports = router;
