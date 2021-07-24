@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const campaignRoutes = require("./routes/campaignRoutes");
-const donationRoutes = require("./routes/donationRoutes");
-const userRoutes = require("./routes/userRoutes");
+const campaignRoutes = require("./routes/campaign-routes");
+const donationRoutes = require("./routes/donation-routes");
+const userRoutes = require("./routes/user-routes");
 require("dotenv").config();
+
+//TODO: maybe? delete donation if user or campaign is deleted
 
 const app = express();
 
@@ -24,6 +26,9 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 //MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
+
+//TODO: handle CORS?
 
 //CAMPAIGN ROUTES
 app.use("/api/campaigns", campaignRoutes);
@@ -35,8 +40,16 @@ app.use("/api/users", userRoutes)
 app.use("/api/donations", donationRoutes);
 
 //404
-app.use((req, res) => {
-   res.status(404).send({
-       message: "404: page not found"
-   })
+app.use((req, res, next) => {
+    const error = new Error("Not found");
+    error.status = 404;
+    next(error);
 });
+
+app.use(((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.json({
+        message: err.message
+    })
+}));
+
