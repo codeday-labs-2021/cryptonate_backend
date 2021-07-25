@@ -9,7 +9,6 @@ require("dotenv").config();
 //TODO: maybe? delete donation if user or campaign is deleted
 
 const app = express();
-app.use(cors());
 
 const port = process.env.PORT || 3000;
 
@@ -29,6 +28,21 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+
+//CORS
+const originsWhitelist = [
+    'http://localhost:4200'
+    //,'http://www.myproductionurl.com'
+];
+const corsOptions = {
+    origin: function(origin, callback){
+        const isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
+        callback(null, isWhitelisted);
+    },
+    credentials:true
+}
+
+app.use(cors(corsOptions));
 
 //CAMPAIGN ROUTES
 app.use("/api/campaigns", campaignRoutes);
