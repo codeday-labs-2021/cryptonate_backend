@@ -3,7 +3,9 @@ const Donation = require("../models/donation");
 const Campaign = require("../models/campaign");
 
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/email");
 
 const getAllUsers = (req, res) => {
     User.find()
@@ -71,16 +73,11 @@ const loginUser = (req, res) => {
                         message: "Authentication failed"
                     });
                 } else if (result) {
-                    const token = jwt.sign({
-                        email: user.email,
-                        userId: user._id,
-                    }, process.env.JWT_KEY, {
-                        expiresIn: "1h",
-                    });
+                    const token = getToken(user);
                     return res.status(200).json({
                         message: "Authentication successful",
                         token: token
-                    })
+                    });
                 } else {
                     return res.status(401).json({
                         message: "Authentication failed"
@@ -91,12 +88,83 @@ const loginUser = (req, res) => {
     });
 }
 
-//TODO: use this method for resetting password
+//TODO: prevent users from updating password using this method:
 const updateUser = (req, res) => {
     const id = req.params.id;
     User.findByIdAndUpdate(id, req.body)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
+}
+
+const forgotPassword = async (req, res) => {
+    User.findOne({email: req.body.email}, async (error, user) => {
+        if (user === null) {
+            return res.status(401).json({
+                message: "No user found with given email address"
+            });
+        } else {
+            const resetToken = user.createPasswordResetToken();
+            await user.save({validateBeforeSave: false});
+
+            const resetURL = `${req.protocol}://${req.get("host")}/api/users/resetPassword/${resetToken}`;
+            const text = `If you forgot your password, submit a PATCH request with your new password to ${resetURL}.
+            \nIf you did not forget your password, please ignore this email.`;
+
+            try {
+                await sendEmail({
+                    email: user.email,
+                    subject: "Your password reset token (valid for 10 minutes)",
+                    text: text
+                });
+
+                res.status(200).json({
+                    message: "Successful. Token sent to email"
+                });
+            } catch (e) {
+                console.log(e);
+                user.passwordResetToken = undefined;
+                user.passwordResetExpires = undefined;
+                await user.save({validateBeforeSave: false});
+
+                return res.status(500).json({
+                    message: "There was a error sending the email. Please try again later"
+                });
+            }
+
+        }
+    });
+}
+
+const resetPassword = async (req, res) => {
+    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    const user = await User.findOne({passwordResetToken: hashedToken, passwordResetExpires: {$gt: Date.now()}});
+
+
+    if(!user) {
+        return res.status(400).json({
+            message: "Token is invalid or has expired"
+        });
+    } else {
+        bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if(err) {
+                return res.status(500).json({
+                    message: err
+                });
+            } else {
+                user.password = hash;
+                user.passwordResetToken = undefined;
+                user.passwordResetExpires = undefined;
+                await user.save();
+
+                const token = getToken(user);
+                return res.status(200).json({
+                    message: "Authentication successful",
+                    token: token
+                });
+
+            }
+        });
+    }
 }
 
 const deleteUser = (req, res) => {
@@ -120,12 +188,23 @@ const findUserCampaigns = (req, res) => {
         .catch(err => res.json({message: err}));
 }
 
+function getToken(user) {
+    return jwt.sign({
+        email: user.email,
+        userId: user._id,
+    }, process.env.JWT_KEY, {
+        expiresIn: "1h",
+    });
+}
+
 module.exports = {
     getAllUsers,
     getUserWithId,
     updateUser,
     signUpUser,
     loginUser,
+    forgotPassword,
+    resetPassword,
     deleteUser,
     findUserCampaigns,
     findUserDonations
