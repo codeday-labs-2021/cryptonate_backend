@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const campaignRoutes = require("./routes/campaign-routes");
 const donationRoutes = require("./routes/donation-routes");
 const userRoutes = require("./routes/user-routes");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -29,7 +28,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
-app.use(cookieParser());
 
 //CORS
 const originsWhitelist = [
