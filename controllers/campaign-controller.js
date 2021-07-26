@@ -35,7 +35,7 @@ const postNewCampaign = (req, res) => {
                     title: req.body.title,
                     date_created: req.body.date_created,
                     date_end: req.body.date_end,
-                    //image_url: req.file.path,
+                    image_url: req.file.path,
                     tags: req.body.tags,
                     description: req.body.description,
                     goal: req.body.goal

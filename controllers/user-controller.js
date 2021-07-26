@@ -73,11 +73,9 @@ const loginUser = (req, res) => {
                         message: "Authentication failed"
                     });
                 } else if (result) {
-                    const token = getToken(user);
-                    return res.status(200).json({
-                        message: "Authentication successful",
-                        token: token
-                    });
+                    const token = createToken(user);
+                    res.cookie("jwt", token, {httpOnly: true, maxAge: maxAge * 1000});
+                    return res.status(200).json(user);
                 } else {
                     return res.status(401).json({
                         message: "Authentication failed"
@@ -85,6 +83,14 @@ const loginUser = (req, res) => {
                 }
             });
         }
+    });
+}
+
+const logoutUser = (req, res) => {
+    //delete jwt cookie - i.e. replace jwt cookie with another one that has very short expiry
+    res.cookie("jwt", "", {maxAge: 1});
+    res.status(200).json({
+        message: "Log out successful"
     });
 }
 
@@ -156,10 +162,10 @@ const resetPassword = async (req, res) => {
                 user.passwordResetExpires = undefined;
                 await user.save();
 
-                const token = getToken(user);
+                const token = createToken(user);
+                res.cookie("jwt", token, {httpOnly: true, maxAge: maxAge * 1000});
                 return res.status(200).json({
-                    message: "Authentication successful",
-                    token: token
+                    message: "Authentication successful"
                 });
 
             }
@@ -188,12 +194,13 @@ const findUserCampaigns = (req, res) => {
         .catch(err => res.json({message: err}));
 }
 
-function getToken(user) {
+const maxAge = 24 * 60 * 60; //1 day
+function createToken(user) {
     return jwt.sign({
         email: user.email,
         userId: user._id,
     }, process.env.JWT_KEY, {
-        expiresIn: "1h",
+        expiresIn: maxAge,
     });
 }
 
@@ -203,6 +210,7 @@ module.exports = {
     updateUser,
     signUpUser,
     loginUser,
+    logoutUser,
     forgotPassword,
     resetPassword,
     deleteUser,

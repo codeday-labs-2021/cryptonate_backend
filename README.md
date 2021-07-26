@@ -9,14 +9,14 @@
 - title: String (required)
 - date_created: Date (defaults to now)
 - date_end: Date
-- image_url: String
+- image: file (png or jpeg)
 - tags: Array
 - description: String (required)
 - goal: Number (required)
 
 #### "/api/campaigns"  
 - GET all campaigns
-- POST a campaign
+- POST a campaign - use form-data instead of json for this
 
 #### "/api/campaigns/:id"
 - GET campaign with id

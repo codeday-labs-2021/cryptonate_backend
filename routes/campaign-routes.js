@@ -1,7 +1,7 @@
 const express = require("express");
 const campaignController = require("../controllers/campaign-controller");
 const multer = require("multer");
-const checkAuth = require("../middleware/check-auth");
+const auth = require("../middleware/auth-middleware");
 
 const router = express.Router();
 
@@ -36,10 +36,10 @@ router.get('/', (req, res) => campaignController.getAllCampaigns(req, res));
 router.get('/:id', (req, res) => campaignController.getCampaignWithId(req, res));
 router.get('/:id/donations', (req, res) => campaignController.findCampaignDonations(req, res));
 
-router.post('/', checkAuth, upload.single("image"), (req, res) => campaignController.postNewCampaign(req, res));
+router.post('/', auth.checkAuth, upload.single("image"), (req, res) => campaignController.postNewCampaign(req, res));
 
-router.patch('/:id', checkAuth, (req, res) => campaignController.updateCampaign(req, res));
+router.patch('/:id', auth.checkAuth, (req, res) => campaignController.updateCampaign(req, res));
 
-router.delete('/:id', checkAuth, (req, res) => campaignController.deleteCampaign(req, res));
+router.delete('/:id', auth.checkAuth, (req, res) => campaignController.deleteCampaign(req, res));
 
 module.exports = router;
