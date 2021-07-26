@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/email");
+const {getLoggedInUser} = require("../middleware/auth-middleware");
 
 const getAllUsers = (req, res) => {
     User.find()
@@ -74,8 +75,11 @@ const loginUser = (req, res) => {
                     });
                 } else if (result) {
                     const token = createToken(user);
-                    res.cookie("jwt", token, {httpOnly: true, maxAge: maxAge * 1000});
-                    return res.status(200).json(user);
+                    return res.status(200).json({
+                        message: "Authentication successful",
+                        jwt: token,
+                        user: user
+                    });
                 } else {
                     return res.status(401).json({
                         message: "Authentication failed"
@@ -87,8 +91,6 @@ const loginUser = (req, res) => {
 }
 
 const logoutUser = (req, res) => {
-    //delete jwt cookie - i.e. replace jwt cookie with another one that has very short expiry
-    res.cookie("jwt", "", {maxAge: 1});
     res.status(200).json({
         message: "Log out successful"
     });
@@ -96,8 +98,8 @@ const logoutUser = (req, res) => {
 
 //TODO: prevent users from updating password using this method:
 const updateUser = (req, res) => {
-    const id = req.params.id;
-    User.findByIdAndUpdate(id, req.body)
+    const user = getLoggedInUser(req, res);
+    User.findByIdAndUpdate(user._id, req.body)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }
@@ -163,9 +165,10 @@ const resetPassword = async (req, res) => {
                 await user.save();
 
                 const token = createToken(user);
-                res.cookie("jwt", token, {httpOnly: true, maxAge: maxAge * 1000});
                 return res.status(200).json({
-                    message: "Authentication successful"
+                    message: "Authentication successful",
+                    jwt: token,
+                    user: user
                 });
 
             }
@@ -174,33 +177,32 @@ const resetPassword = async (req, res) => {
 }
 
 const deleteUser = (req, res) => {
-    const id = req.params.id;
-    User.findByIdAndDelete(id)
+    const user = getLoggedInUser(req, res);
+    User.findByIdAndDelete(user._id)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }
 
 const findUserDonations = (req, res) => {
-    const id = req.params.id;
-    Donation.find().where("user_id", id)
+    const user = getLoggedInUser(req, res);
+    Donation.find().where("user_id", user._id)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }
 
 const findUserCampaigns = (req, res) => {
-    const id = req.params.id;
-    Campaign.find().where("author_id", id)
+    const user = getLoggedInUser(req, res);
+    Campaign.find().where("author_id", user._id)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }
 
-const maxAge = 24 * 60 * 60; //1 day
 function createToken(user) {
     return jwt.sign({
         email: user.email,
         userId: user._id,
     }, process.env.JWT_KEY, {
-        expiresIn: maxAge,
+        expiresIn: "1h",
     });
 }
 
