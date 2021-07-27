@@ -9,7 +9,7 @@
 - title: String (required)
 - date_created: Date (defaults to now)
 - date_end: Date
-- image: file (png or jpeg)
+- image_url: String
 - tags: Array
 - description: String (required)
 - goal: Number (required)
