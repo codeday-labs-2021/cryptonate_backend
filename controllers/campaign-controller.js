@@ -1,8 +1,7 @@
 const Campaign = require("../models/campaign");
 const Donation = require("../models/donation");
-const User = require("../models/user");
 const mongoose = require("mongoose");
-const {getLoggedInUser} = require("../middleware/auth-middleware");
+const User = require("../models/user");
 
 
 const getAllCampaigns = (req, res) => {
@@ -20,13 +19,12 @@ const getCampaignWithId = (req, res) => {
         .catch(err => res.json({message: err}));
 }
 
-
-//TODO: Delete image upload if save not successful (i.e. no user or incorrect request)
-const postNewCampaign = (req, res) => {
-    const user = getLoggedInUser(req, res);
+const postNewCampaign = async (req, res) => {
+    let user = await User.findById(req.userData.userId);
+    console.log("=================", user);
     if(!user) {
-        return res.status(404).json({
-            message: "User not logged in"
+        return res.status(401).json({
+            message: "Not authorized"
         })
     } else {
         const campaign = new Campaign({

@@ -1,5 +1,6 @@
 const Donation = require("../models/donation");
 const Campaign = require("../models/campaign");
+const mongoose = require("mongoose");
 const User = require("../models/user");
 
 /*
@@ -30,11 +31,7 @@ const postNewDonation = async (req, res) => {
             campaign = result;
         });
 
-    let user;
-    await User.findById(req.body.user_id)
-        .then(result => {
-            user = result;
-        });
+    let user = await User.findById(req.userData.userId);
 
     console.log(campaign);
     console.log(user);
@@ -48,7 +45,13 @@ const postNewDonation = async (req, res) => {
             message: "User does not exist"
         })
     } else {
-        const donation = new Donation(req.body);
+        const donation = new Donation({
+                _id: new mongoose.Types.ObjectId(),
+                campaign_id: req.body.campaign_id,
+                user_id: user._id,
+                amount_donated: req.body.amount_donated,
+                date_donated: req.body.date_donated
+            });
 
         donation.save()
             .then(result => res.json(result))
