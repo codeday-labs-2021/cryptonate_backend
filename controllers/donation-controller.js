@@ -25,13 +25,8 @@ const getDonationWithId = (req, res) => {
 }
 
 const postNewDonation = async (req, res) => {
-    let campaign;
-    await Campaign.findById(req.body.campaign_id)
-        .then(result => {
-            campaign = result;
-        });
-
     let user = await User.findById(req.userData.userId);
+    let campaign = await Campaign.findById(req.body.campaign_id);
 
     console.log(campaign);
     console.log(user);

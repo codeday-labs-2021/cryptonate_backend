@@ -4,8 +4,6 @@ const auth = require("../middleware/auth-middleware");
 
 const router = express.Router();
 
-//TODO: add checks for authentication depending on routes
-
 //TODO: make sure users can only patch and delete the campaigns they create
 
 router.get('/', (req, res) => campaignController.getAllCampaigns(req, res));
