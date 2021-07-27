@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/email");
-const {getLoggedInUser} = require("../middleware/auth-middleware");
 
 const getAllUsers = (req, res) => {
     User.find()
@@ -97,8 +96,8 @@ const logoutUser = (req, res) => {
 }
 
 //TODO: prevent users from updating password using this method:
-const updateUser = (req, res) => {
-    const user = getLoggedInUser(req, res);
+const updateUser = async (req, res) => {
+    let user = await User.findById(req.userData.userId);
     User.findByIdAndUpdate(user._id, req.body)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
@@ -176,22 +175,22 @@ const resetPassword = async (req, res) => {
     }
 }
 
-const deleteUser = (req, res) => {
-    const user = getLoggedInUser(req, res);
+const deleteUser = async (req, res) => {
+    let user = await User.findById(req.userData.userId);
     User.findByIdAndDelete(user._id)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }
 
-const findUserDonations = (req, res) => {
-    const user = getLoggedInUser(req, res);
+const findUserDonations = async (req, res) => {
+    let user = await User.findById(req.userData.userId);
     Donation.find().where("user_id", user._id)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }
 
-const findUserCampaigns = (req, res) => {
-    const user = getLoggedInUser(req, res);
+const findUserCampaigns = async (req, res) => {
+    let user = await User.findById(req.userData.userId);
     Campaign.find().where("author_id", user._id)
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
