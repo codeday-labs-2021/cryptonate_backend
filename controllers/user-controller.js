@@ -185,6 +185,7 @@ const deleteUser = async (req, res) => {
 const findUserDonations = async (req, res) => {
     let user = await User.findById(req.userData.userId);
     Donation.find().where("user_id", user._id)
+        .populate("campaign_id")
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }

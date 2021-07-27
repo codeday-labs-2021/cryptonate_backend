@@ -9,7 +9,7 @@
 - title: String (required)
 - date_created: Date (defaults to now)
 - date_end: Date
-- image: file (png or jpeg)
+- image_url: String
 - tags: Array
 - description: String (required)
 - goal: Number (required)
@@ -49,11 +49,11 @@
 - DELETE user with id
 - PATCH user with id
 
-#### "/api/users/:id/donations"
-- GET all donations that have been made by user with id
+#### "/api/users/donations"
+- GET all donations that have been made by the logged-in user
 
-#### "/api/users/:id/campaigns"
-- GET all campaigns that have been created by user with id
+#### "/api/users/campaigns"
+- GET all campaigns that have been created by the logged-in user
 
 ### Donations collection:
 #### DONATION SCHEMA

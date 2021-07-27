@@ -12,9 +12,9 @@ router.get('/logout', (req, res) => userController.logoutUser(req, res));
 
 //user routes
 router.get('/', (req, res) => userController.getAllUsers(req, res));
+router.get('/donations', auth.checkAuth,(req, res) => userController.findUserDonations(req, res));
+router.get('/campaigns', auth.checkAuth, (req, res) => userController.findUserCampaigns(req, res));
 router.get('/:id', (req, res) => userController.getUserWithId(req, res));
-router.get('/:id/donations', auth.checkAuth,(req, res) => userController.findUserDonations(req, res));
-router.get('/:id/campaigns', auth.checkAuth, (req, res) => userController.findUserCampaigns(req, res));
 
 router.patch('/:id', auth.checkAuth, (req, res) => userController.updateUser(req, res));
 
