@@ -46,7 +46,7 @@ const postNewCampaign = async (req, res) => {
 
 const updateCampaign = (req, res) => {
     const id = req.params.id;
-    Campaign.findByIdAndUpdate(id, req.body)
+    Campaign.findByIdAndUpdate(id, req.body, { new: true })
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
 }

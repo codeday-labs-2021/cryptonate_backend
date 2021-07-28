@@ -95,11 +95,17 @@ const logoutUser = (req, res) => {
     });
 }
 
-//TODO: prevent users from updating password using this method:
 const updateUser = async (req, res) => {
     let user = await User.findById(req.userData.userId);
-    User.findByIdAndUpdate(user._id, req.body)
-        .then(result => res.json(result))
+    User.findByIdAndUpdate(user._id, req.body, { new: true })
+        .then(result => {
+            const token = createToken(result);
+            console.log("=======================", result);
+            return res.status(200).json({
+                jwt: token,
+                user: result
+            });
+        })
         .catch(err => res.json({message: err}));
 }
 
