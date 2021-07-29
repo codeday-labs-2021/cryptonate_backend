@@ -100,7 +100,6 @@ const updateUser = async (req, res) => {
     User.findByIdAndUpdate(user._id, req.body, { new: true })
         .then(result => {
             const token = createToken(result);
-            console.log("=======================", result);
             return res.status(200).json({
                 jwt: token,
                 user: result

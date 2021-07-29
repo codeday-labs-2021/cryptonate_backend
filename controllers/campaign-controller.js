@@ -21,7 +21,6 @@ const getCampaignWithId = (req, res) => {
 
 const postNewCampaign = async (req, res) => {
     let user = await User.findById(req.userData.userId);
-    console.log("=================", user);
     if(!user) {
         return res.status(401).json({
             message: "Not authorized"
