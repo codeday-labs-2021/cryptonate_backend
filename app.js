@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const campaignRoutes = require("./routes/campaign-routes");
 const donationRoutes = require("./routes/donation-routes");
 const userRoutes = require("./routes/user-routes");
+const walletRoutes = require("./routes/wallet-routes");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -52,6 +53,8 @@ app.use("/api/users", userRoutes)
 
 //DONATIONS ROUTES
 app.use("/api/donations", donationRoutes);
+
+app.use("/api/wallet",  walletRoutes);
 
 //404
 app.use((req, res, next) => {
