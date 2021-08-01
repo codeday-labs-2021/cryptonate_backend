@@ -18,6 +18,9 @@
 - GET all campaigns
 - POST a campaign - use form-data instead of json for this
 
+#### "/api/campaigns/get4"
+- GET the four most recently created campaigns
+
 #### "/api/campaigns/:id"
 - GET campaign with id
 - DELETE campaign with id

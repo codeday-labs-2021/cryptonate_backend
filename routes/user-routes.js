@@ -4,7 +4,6 @@ const auth = require("../middleware/auth-middleware");
 
 const router = express.Router();
 
-//TODO: Make sure that patch and delete of user can only be done by that user
 //authentication
 router.post('/signup', (req, res) => userController.signUpUser(req, res));
 router.post('/login', (req, res) => userController.loginUser(req, res));

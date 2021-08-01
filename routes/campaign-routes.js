@@ -4,9 +4,8 @@ const auth = require("../middleware/auth-middleware");
 
 const router = express.Router();
 
-//TODO: make sure users can only patch and delete the campaigns they create
-
 router.get('/', (req, res) => campaignController.getAllCampaigns(req, res));
+router.get('/get4', (req, res) => campaignController.getFourCampaigns(req, res));
 router.get('/:id', (req, res) => campaignController.getCampaignWithId(req, res));
 router.get('/:id/donations', (req, res) => campaignController.findCampaignDonations(req, res));
 

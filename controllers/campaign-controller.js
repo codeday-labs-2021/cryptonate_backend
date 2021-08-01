@@ -5,7 +5,25 @@ const User = require("../models/user");
 
 
 const getAllCampaigns = (req, res) => {
-    Campaign.find()
+    Campaign.find({}, null, {
+        sort: {
+            date_created: -1 //Sort by Date Created DESC
+        }
+    })
+        .populate("author_id")
+        .then(result => res.json(result))
+        .catch(err => res.json({message: err}));
+};
+
+const getFourCampaigns = (req, res) => {
+    Campaign.find({}, null, // Columns to Return
+        {
+            skip:0, // Starting Row
+            limit:4, // Ending Row
+            sort:{
+                date_created: -1
+            }
+        })
         .populate("author_id")
         .then(result => res.json(result))
         .catch(err => res.json({message: err}));
@@ -66,6 +84,7 @@ const findCampaignDonations = (req, res) => {
 
 module.exports = {
     getAllCampaigns,
+    getFourCampaigns,
     getCampaignWithId,
     postNewCampaign,
     updateCampaign,
