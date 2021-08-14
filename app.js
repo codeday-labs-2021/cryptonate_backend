@@ -5,6 +5,7 @@ const donationRoutes = require("./routes/donation-routes");
 const userRoutes = require("./routes/user-routes");
 const walletRoutes = require("./routes/wallet-routes");
 const cors = require("cors");
+var path = require("path");
 require("dotenv").config();
 
 //TODO: maybe? delete donation if user or campaign is deleted
@@ -29,6 +30,10 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+
+//FOLDER
+app.use("/campaigns", express.static(path.join(__dirname, "campaigns")));
+app.use(express.static("campaigns"));
 
 //CORS
 const originsWhitelist = [
