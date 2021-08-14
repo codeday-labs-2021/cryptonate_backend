@@ -7,6 +7,7 @@ USER SCHEMA
 	password: String (required)
 
 	//for users that will create a campaign
+	wallet_address: String
 	occupation: String
 	organization: String
 	location: String
@@ -43,7 +44,10 @@ const userSchema = new Schema({
     passwordResetToken: String,
     passwordResetExpires: Date,
 
-
+    wallet_address: {
+        type: String,
+        required: false,
+    },
     occupation: {
         type: String,
         required: false,
