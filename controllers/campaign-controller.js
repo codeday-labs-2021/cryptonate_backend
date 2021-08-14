@@ -3,7 +3,6 @@ const Donation = require("../models/donation");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 
-
 const getAllCampaigns = (req, res) => {
     Campaign.find({}, null, {
         sort: {
@@ -50,10 +49,11 @@ const postNewCampaign = async (req, res) => {
             title: req.body.title,
             date_created: req.body.date_created,
             date_end: req.body.date_end,
-            image_url: req.body.image_url,
+            image_url: req.file ? req.file.path : null,
             tags: req.body.tags,
             description: req.body.description,
-            goal: req.body.goal
+            goal: req.body.goal,
+            recipient_address: req.body.recipient_address
         });
         campaign.save()
             .then(result => res.json(result))

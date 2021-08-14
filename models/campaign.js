@@ -8,7 +8,7 @@ CAMPAIGN SCHEMA
     tags: Array
     description: String (required)
     goal: Number (required)
-
+    recipient_address: String (required)
  */
 
 const mongoose = require("mongoose");
@@ -48,6 +48,10 @@ const campaignSchema = new Schema({
         type: Number,
         required: true,
     },
+    recipient_address: {
+        type: String,
+        required: true
+    }
 });
 
 const Campaign = mongoose.model("Campaign", campaignSchema);

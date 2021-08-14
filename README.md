@@ -9,10 +9,12 @@
 - title: String (required)
 - date_created: Date (defaults to now)
 - date_end: Date
-- image_url: String
+- image_url: String (for getting url of uploaded image file)
+- image: File
 - tags: Array
 - description: String (required)
 - goal: Number (required)
+- recipient_address: String (required)
 
 #### "/api/campaigns"  
 - GET all campaigns
@@ -35,6 +37,7 @@
 - email: String (required)
 
 //for users that will create a campaign
+- wallet_address: String
 - occupation: String
 - organization: String
 - location: String

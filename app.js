@@ -5,10 +5,8 @@ const donationRoutes = require("./routes/donation-routes");
 const userRoutes = require("./routes/user-routes");
 const walletRoutes = require("./routes/wallet-routes");
 const cors = require("cors");
-var path = require("path");
+let path = require("path");
 require("dotenv").config();
-
-//TODO: maybe? delete donation if user or campaign is deleted
 
 const app = express();
 

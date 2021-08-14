@@ -35,7 +35,6 @@ const signUpUser = (req, res) => {
                             message: err
                         });
                     } else {
-                        //TODO: this method does not seem to give error when required fields are not present
                         const user = new User({
                             first_name: req.body.first_name,
                             last_name: req.body.last_name,
@@ -49,6 +48,7 @@ const signUpUser = (req, res) => {
                             website_url: req.body.website_url,
                             organization_email: req.body.organization_email,
                             about: req.body.about,
+                            wallet_address: req.body.wallet_address
                         });
 
                         user.save()
