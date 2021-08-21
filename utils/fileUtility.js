@@ -11,13 +11,10 @@ function movefiletToDestination(source, filename, destination) {
 
         fs.move("./" + source, currentFolder + '/' + destination + '/' + filename, function (err) {
             if (err) {
-                errorLogger.error(` movefiletodestination Error Message : ${err}`);
                 return console.error("movefiletodestination  " + err);
             }
             console.log("file uploaded!")
-            successLogger.info(
-                filename + "successful uploaded  " + timeUtility.getUtcTime()
-            );
+          
         });
     } catch (err) {
         throw err;

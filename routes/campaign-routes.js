@@ -5,11 +5,13 @@ const multer = require("multer");
 const router = express.Router();
 
 //Create storage for images
-const storage = multer.diskStorage({
+const imageStorage = multer.diskStorage({
     destination: function(req, file, cb) {
+        console.log("storage ============= ");
         cb(null, "./uploads/");
     },
     filename: function(req, file, cb) {
+        console.log("storage ============= ");
         cb(null, Date.now() + file.originalname);
     }
 });
@@ -21,11 +23,7 @@ const fileFilter = (req, file, cb) => {
     }
 };
 const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 5 //upto 5 MB
-    },
-    fileFilter: fileFilter
+    storage: imageStorage
 });
 
 router.get('/', (req, res) => campaignController.getAllCampaigns(req, res));
@@ -33,7 +31,8 @@ router.get('/get4', (req, res) => campaignController.getFourCampaigns(req, res))
 router.get('/:id', (req, res) => campaignController.getCampaignWithId(req, res));
 router.get('/:id/donations', (req, res) => campaignController.findCampaignDonations(req, res));
 
-router.post('/', auth.checkAuth, upload.single("image"), (req, res) => campaignController.postNewCampaign(req, res));
+router.post('/', [auth.checkAuth,  upload.single("file")], (req, res) => campaignController.postNewCampaign(req, res));
+ router.post('/uploadImage',  upload.single("file"), (req, res) => campaignController.uploadImage(req, res));
 
 router.patch('/:id', auth.checkAuth, (req, res) => campaignController.updateCampaign(req, res));
 
